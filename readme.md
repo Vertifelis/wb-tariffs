@@ -1,54 +1,80 @@
-# Шаблон для выполнения тестового задания
+# Сервис для сбора данных о тарифах из WB API
 
 ## Описание
-Шаблон подготовлен для того, чтобы попробовать сократить трудоемкость выполнения тестового задания.
 
-В шаблоне настоены контейнеры для `postgres` и приложения на `nodejs`.  
-Для взаимодействия с БД используется `knex.js`.  
-В контейнере `app` используется `build` для приложения на `ts`, но можно использовать и `js`.
+Данный сервис предназначен для сбора данных о тарифах коробов из WB API и их обновления в указанных Google-таблицах.
 
-Шаблон не является обязательным!\
-Можно использовать как есть или изменять на свой вкус.
+## Подготовка к запуску
 
-Все настройки можно найти в файлах:
-- compose.yaml
-- dockerfile
-- package.json
-- tsconfig.json
-- src/config/env/env.ts
-- src/config/knex/knexfile.ts
+Для запуска сервиса необходимо иметь ключ от Google Service Account, идентификаторы Google таблиц, а также ключ от WB API.
 
-## Команды:
+### Google Service Account
 
-Запуск базы данных:
-```bash
-docker compose up -d --build postgres
+1. В Google Cloud создать сервис-аккаунт (IAM & Admin > Service Accounts).
+2. Для созданного аккаунта сгенерировать и локально сохранить ключ с именем `google_key.json` (IAM & Admin > Service Accounts > Manage keys > Add key > JSON). Данный ключ поместить в корневую директорию проекта.
+3. Создать требуемое количество Google таблиц, в них создать лист `stocks_coefs`. ID таблицы можно взять из URL-адреса страницы.
+
+### .env
+
+В корневой директории необходимо создать файл `.env` и скопировать в него содержимое файла `example.env`. Этот файл содержит полный список параметров окружения для запуска приложения с примерами. Необходимо заполнить файл своими данными.
+
+Необходимо указать `WB_API_KEY` и `GOOGLE_APPLICATION_SHEET_IDS`.
+
+Данные для аутентификации в БД.
+
+```
+POSTGRES_PORT=5432
+POSTGRES_DB=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
 ```
 
-Для выполнения миграций и сидов не из контейнера:
-```bash
-npm run knex:dev migrate latest
+Порт, на котором запущено приложение.
+
+```
+APP_PORT=5000
 ```
 
-```bash
-npm run knex:dev seed run
-```
-Также можно использовать и остальные команды (`migrate make <name>`,`migrate up`, `migrate down` и т.д.)
+URL-адрес WB API.
 
-Для запуска приложения в режиме разработки:
-```bash
-npm run dev
+```
+WB_API_URL=https://common-api.wildberries.ru/api/v1
 ```
 
-Запуск проверки самого приложения:
-```bash
-docker compose up -d --build app
+Ключ для доступа к WB API.
+
+```
+WB_API_KEY=your_wb_api_key
 ```
 
-Для финальной проверки рекомендую:
-```bash
-docker compose down --rmi local --volumes
+Интервал опроса данных о тарифах (в секундах).
+
+```
+WB_QUERY_INTERVAL=3600
+```
+
+Путь до ключа от Google Service Account.
+
+```
+GOOGLE_APPLICATION_CREDENTIALS=./google_key.json
+```
+
+Список ID Google-таблиц, указанных через запятую
+
+```
+GOOGLE_APPLICATION_SHEET_IDS=spreadsheet_id1,spreadsheet_id2
+```
+
+## Запуск сервиса
+
+Для запуска контейнера сервиса нужно использовать команду:
+
+```
+docker compose up
+```
+
+Для сборки и запуска контейнера сервиса нужно использовать команду:
+
+```
 docker compose up --build
 ```
-
-PS: С наилучшими пожеланиями!
