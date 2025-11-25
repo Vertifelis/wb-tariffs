@@ -26,11 +26,11 @@ function logMigrationList(list: [{ name: string }[], { file: string }[]]) {
 }
 
 function logSeedRun(result: [string[]]) {
-    if(result[0].length === 0) {
+    if (result[0].length === 0) {
         console.log("No seeds to run");
     }
     console.log(`Ran ${result[0].length} seed files`);
-    for(const seed of result[0]) {
+    for (const seed of result[0]) {
         console.log("- " + seed?.split(/\/|\\/).pop());
     }
     // Ran 5 seed files
@@ -42,19 +42,19 @@ function logSeedMake(name: string) {
 
 export const migrate = {
     latest: async () => {
-        logMigrationResults("latest", await knex.migrate.latest());
+        logMigrationResults("latest", (await knex.migrate.latest()) as [number, string[]]);
     },
     rollback: async () => {
-        logMigrationResults("rollback", await knex.migrate.rollback());
+        logMigrationResults("rollback", (await knex.migrate.rollback()) as [number, string[]]);
     },
     down: async (name?: string) => {
-        logMigrationResults("down", await knex.migrate.down({ name }));
+        logMigrationResults("down", (await knex.migrate.down({ name })) as [number, string[]]);
     },
     up: async (name?: string) => {
-        logMigrationResults("up", await knex.migrate.up({ name }));
+        logMigrationResults("up", (await knex.migrate.up({ name })) as [number, string[]]);
     },
     list: async () => {
-        logMigrationList(await knex.migrate.list());
+        logMigrationList((await knex.migrate.list()) as [{ name: string }[], { file: string }[]]);
     },
     make: async (name: string) => {
         if (!name) {

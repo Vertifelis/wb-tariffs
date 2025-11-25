@@ -15,7 +15,7 @@ export class WbApiService {
             },
         });
 
-        const data = await response.json();
+        const data = (await response.json()) as WBTariffResponse;
 
         const result = await tariffSchema.parseAsync(data);
 

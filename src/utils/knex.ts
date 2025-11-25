@@ -6,7 +6,7 @@ program
     .command("migrate")
     .argument("[type]", "latest|rollback|status|down|up|list")
     .argument("[arg]", "version")
-    .action(async (action, arg) => {
+    .action(async (action, arg: string) => {
         if (!action) return;
         if (action === "latest") await migrate.latest();
         if (action === "rollback") await migrate.rollback();
@@ -16,7 +16,7 @@ program
         if (action === "make") await migrate.make(arg);
         process.exit(0);
     });
-program.command("seed [action] [arg]").action(async (action, arg) => {
+program.command("seed [action] [arg]").action(async (action, arg: string) => {
     if (!action) return;
     if (action === "run") await seed.run();
     if (action === "make") await seed.make(arg);

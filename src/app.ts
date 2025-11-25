@@ -27,7 +27,7 @@ async function runApplication(): Promise<void> {
 
         const tariffsExcel = tariffsService.convertTariffsToExcel(tariffs);
 
-        spreadsheetService.syncTariffSpreadsheets(env.GOOGLE_APPLICATION_SHEET_IDS, tariffsExcel, "stocks_coefs");
+        await spreadsheetService.syncTariffSpreadsheets(env.GOOGLE_APPLICATION_SHEET_IDS, tariffsExcel, "stocks_coefs");
     }, env.WB_QUERY_INTERVAL * 1000);
 
     process.on("uncaughtException", (error) => {
@@ -36,7 +36,8 @@ async function runApplication(): Promise<void> {
     });
 
     process.on("unhandledRejection", (reason, promise) => {
-        console.error(`Unhandled rejection at: ${promise}, reason: ${reason}`);
+        console.error("Unhandled rejection at: ", promise);
+        console.error("Reason: ", reason);
         process.exit(1);
     });
 }
@@ -44,5 +45,5 @@ async function runApplication(): Promise<void> {
 try {
     await runApplication();
 } catch (error) {
-    console.error(`Startup failure: ${error}`);
+    console.error("Startup failure: ", error);
 }
