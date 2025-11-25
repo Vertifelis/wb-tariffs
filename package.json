@@ -8,7 +8,7 @@
         "dev": "nodemon --watch src --ext ts --exec tsx src/app.ts",
         "watch:build": "tsc --build --force --verbose --watch",
         "knex:dev": "tsx src/utils/knex.ts",
-        "build": "tsc --allowJs",
+        "build": "tsc --project tsconfig.build.json --allowJs",
         "start": "node dist/app.js",
         "knex": "node dist/utils/knex.js",
         "tsc:check": "tsc --allowJs --noEmit",
