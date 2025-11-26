@@ -6,11 +6,14 @@ export class SchedulerService {
             try {
                 await task();
             } catch (error) {
-                console.error(`Error while executing scheduled task: ${error}`);
+                console.error("Error while executing scheduled task: ", error);
             }
         };
 
-        const taskHandle = setInterval(wrappedTask, intervalMs);
+        const taskHandle = setInterval(() => {
+            void wrappedTask();
+        }, intervalMs);
+
         this.taskHandles.push(taskHandle);
 
         return taskHandle;
