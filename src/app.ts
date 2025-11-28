@@ -5,6 +5,8 @@ import { SchedulerService } from "#services/scheduler.service.js";
 import { TariffsRepository } from "#services/tariffs.repository.js";
 import { WbApiService } from "#services/wb-api.service.js";
 import { TariffsService } from "#services/tariffs.service.js";
+import { GoogleAuth } from "google-auth-library";
+import { sheets_v4 } from "@googleapis/sheets";
 
 async function runApplication(): Promise<void> {
     await migrate.latest();
@@ -16,7 +18,12 @@ async function runApplication(): Promise<void> {
     const wbApiService = new WbApiService(env.WB_API_URL, env.WB_API_KEY);
     const tariffsService = new TariffsService();
     const tariffsRepository = new TariffsRepository();
-    const spreadsheetService = new GoogleSpreadsheetsService();
+
+    const auth = new GoogleAuth({
+        keyFile: "google_key.json",
+        scopes: "https://www.googleapis.com/auth/spreadsheets",
+    });
+    const spreadsheetService = new GoogleSpreadsheetsService(new sheets_v4.Sheets({ auth }));
 
     schedulerService.scheduleTask(async () => {
         const tariffsData = await wbApiService.fetchTariffs();
@@ -43,7 +50,7 @@ async function runApplication(): Promise<void> {
 }
 
 try {
-    await runApplication();
+    void runApplication();
 } catch (error) {
     console.error("Startup failure: ", error);
 }

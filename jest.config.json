@@ -1,14 +1,23 @@
 {
+    "testMatch": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[tj]s?(x)"],
+    "extensionsToTreatAsEsm": [".ts"],
     "moduleNameMapper": {
-        "^(\\.{1,2}/.*)\\.js$": "$1"
+        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^src/(.*)": "<rootDir>/src/$1",
+        "^test/(.*)": "<rootDir>/test/$1"
     },
-    "moduleFileExtensions": ["js", "json", "ts"],
-    "rootDir": "./",
-    "testRegex": ".*\\.spec\\.ts$",
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+
     "transform": {
-        "^.+\\.(t|j)s$": ["ts-jest", { "useESM": true }]
+        "^.+\\.(ts|tsx)$": [
+            "ts-jest",
+            {
+                "useESM": true,
+                "tsconfig": "<rootDir>/tsconfig.json"
+            }
+        ]
     },
-    "collectCoverageFrom": ["**/*.(t|j)s"],
-    "coverageDirectory": "../coverage",
+    "collectCoverageFrom": ["src/**/*.{ts,tsx,js,jsx}", "!src/**/*.d.ts", "!src/**/index.{ts,js}"],
+    "coverageDirectory": "<rootDir>/coverage",
     "testEnvironment": "node"
 }
