@@ -1,5 +1,6 @@
 import { WbApiService } from "./wb-api.service.js";
-import { tariffSchema, WBTariffResponse } from "#types/global.js";
+import { tariffSchema } from "#types/global.js";
+import tariffsResponse from "test/examples/valid-tariff-response.json";
 
 jest.mock("#types/global.js", () => ({
     tariffSchema: {
@@ -8,29 +9,6 @@ jest.mock("#types/global.js", () => ({
 }));
 
 describe("WbApiService", () => {
-    const tariffsResponse: WBTariffResponse = {
-        "response": {
-            "data": {
-                "dtNextBox": "",
-                "dtTillMax": "2025-11-27",
-                "warehouseList": [
-                    {
-                        "boxDeliveryBase": "46",
-                        "boxDeliveryCoefExpr": "100",
-                        "boxDeliveryLiter": "14",
-                        "boxDeliveryMarketplaceBase": "-",
-                        "boxDeliveryMarketplaceCoefExpr": "-",
-                        "boxDeliveryMarketplaceLiter": "-",
-                        "boxStorageBase": "0,07",
-                        "boxStorageCoefExpr": "100",
-                        "boxStorageLiter": "0,07",
-                        "geoName": "",
-                        "warehouseName": "Цифровой склад",
-                    },
-                ],
-            },
-        },
-    };
     const API_URL = "https://api.example.com";
     const API_TOKEN = "test-token";
     let service: WbApiService;

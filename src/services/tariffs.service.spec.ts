@@ -1,44 +1,9 @@
 import { TariffsService } from "./tariffs.service.js";
 import { TariffRecord, WBTariffResponse } from "#types/global.js";
+import tariffsResponse from "test/examples/valid-tariff-response.json";
 
 describe("TariffsService", () => {
     const date = new Date("2023-10-05T12:00:00Z");
-    const tariffsResponse: WBTariffResponse = {
-        "response": {
-            "data": {
-                "dtNextBox": "",
-                "dtTillMax": "2025-11-27",
-                "warehouseList": [
-                    {
-                        "boxDeliveryBase": "46",
-                        "boxDeliveryCoefExpr": "100",
-                        "boxDeliveryLiter": "14",
-                        "boxDeliveryMarketplaceBase": "-",
-                        "boxDeliveryMarketplaceCoefExpr": "-",
-                        "boxDeliveryMarketplaceLiter": "-",
-                        "boxStorageBase": "0,07",
-                        "boxStorageCoefExpr": "100",
-                        "boxStorageLiter": "0,07",
-                        "geoName": "",
-                        "warehouseName": "Цифровой склад",
-                    },
-                    {
-                        "boxDeliveryBase": "89,7",
-                        "boxDeliveryCoefExpr": "195",
-                        "boxDeliveryLiter": "27,3",
-                        "boxDeliveryMarketplaceBase": "89,7",
-                        "boxDeliveryMarketplaceCoefExpr": "195",
-                        "boxDeliveryMarketplaceLiter": "27,3",
-                        "boxStorageBase": "0,1",
-                        "boxStorageCoefExpr": "145",
-                        "boxStorageLiter": "0,1",
-                        "geoName": "Центральный федеральный округ",
-                        "warehouseName": "Цифровой склад 2",
-                    },
-                ],
-            },
-        },
-    };
     const tariffsRecords: TariffRecord[] = [
         {
             date: new Date("2023-10-05T12:00:00Z"),
@@ -84,7 +49,7 @@ describe("TariffsService", () => {
         it("should convert response to tariff records with current date", () => {
             jest.setSystemTime(date);
 
-            const records = service.convertResponseToRecords(tariffsResponse);
+            const records = service.convertResponseToRecords(tariffsResponse as WBTariffResponse);
 
             expect(records).toHaveLength(2);
             expect(records[0]).toEqual(tariffsRecords[0]);
