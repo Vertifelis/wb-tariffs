@@ -2,8 +2,6 @@
     "name": "wb-tariffs",
     "version": "1.0.0",
     "description": "Service application that grabs data from WB API and updates Google Spreadsheets with it",
-    "main": "app.js",
-    "type": "module",
     "scripts": {
         "build": "tsc --project tsconfig.build.json",
         "dev": "nodemon --watch src --ext ts --exec tsx src/app.ts",

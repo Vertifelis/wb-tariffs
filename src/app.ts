@@ -43,7 +43,7 @@ async function runApplication(): Promise<void> {
 }
 
 try {
-    await runApplication();
+    void runApplication();
 } catch (error) {
     console.error("Startup failure: ", error);
 }
