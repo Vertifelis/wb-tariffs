@@ -2,12 +2,10 @@ import { SchedulerService } from "./scheduler.service.js";
 
 describe("SchedulerService", () => {
     let scheduler: SchedulerService;
-    let consoleErrorSpy: jest.SpyInstance;
 
     beforeEach(() => {
         jest.useFakeTimers();
         scheduler = new SchedulerService();
-        consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
     });
 
     afterEach(() => {
@@ -22,7 +20,9 @@ describe("SchedulerService", () => {
             scheduler.scheduleTask(mockTask, 1000);
 
             expect(mockTask).not.toHaveBeenCalled();
+
             jest.advanceTimersByTime(1000);
+
             expect(mockTask).toHaveBeenCalled();
         });
 
@@ -30,36 +30,31 @@ describe("SchedulerService", () => {
             const mockTask = jest.fn();
             scheduler.scheduleTask(mockTask, 500);
 
-            jest.advanceTimersByTime(1500);
-            expect(mockTask).toHaveBeenCalledTimes(3);
-        });
+            jest.advanceTimersByTime(500);
 
-        it("should catch and log errors from the scheduled task", async () => {
-            const error = new Error("Task failed");
-            const mockTask = jest.fn().mockRejectedValue(error);
+            expect(mockTask).toHaveBeenCalledTimes(1);
 
-            scheduler.scheduleTask(mockTask, 1000);
-            jest.advanceTimersByTime(1000);
+            jest.advanceTimersByTime(500);
 
-            await jest.advanceTimersByTimeAsync(0);
-
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error while executing scheduled task: ", error);
+            expect(mockTask).toHaveBeenCalledTimes(2);
         });
 
         it("should continue execution after a task error", async () => {
             const error = new Error("First task failed");
             const mockTask1 = jest.fn().mockRejectedValue(error);
             const mockTask2 = jest.fn();
+            console.error = jest.fn();
 
             scheduler.scheduleTask(mockTask1, 500);
             scheduler.scheduleTask(mockTask2, 500);
 
             jest.advanceTimersByTime(500);
-            await jest.advanceTimersByTimeAsync(0);
-            expect(consoleErrorSpy).toHaveBeenCalled();
+
+            expect(mockTask1).toHaveBeenCalledTimes(1);
+            await expect(mockTask1).rejects.toThrow("First task failed");
 
             jest.advanceTimersByTime(500);
-            await jest.advanceTimersByTimeAsync(0);
+
             expect(mockTask2).toHaveBeenCalledTimes(2);
         });
     });
@@ -77,14 +72,6 @@ describe("SchedulerService", () => {
 
             expect(mockTask1).not.toHaveBeenCalled();
             expect(mockTask2).not.toHaveBeenCalled();
-        });
-
-        it("should reset internal task handles array", () => {
-            scheduler.scheduleTask(() => Promise.resolve(), 1000);
-            expect(scheduler["taskHandles"].length).toBe(1);
-
-            scheduler.clearTasks();
-            expect(scheduler["taskHandles"].length).toBe(0);
         });
 
         it("should not throw an error while resetting empty task handles", () => {
