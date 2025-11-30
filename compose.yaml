@@ -9,6 +9,10 @@ volumes:
   postgres-vol:
     driver: local
 
+secrets:
+  google_service_account:
+    file: ${GOOGLE_APPLICATION_CREDENTIALS}
+
 services:
 
   postgres:
@@ -51,7 +55,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
+    secrets:
+      - google_service_account
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: ${POSTGRES_PORT}
@@ -63,7 +68,7 @@ services:
       WB_API_URL: ${WB_API_URL}
       WB_API_KEY: ${WB_API_KEY}
       WB_QUERY_INTERVAL: ${WB_QUERY_INTERVAL}
-      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/google_service_account
       GOOGLE_APPLICATION_SHEET_IDS: ${GOOGLE_APPLICATION_SHEET_IDS}
 
     ports:

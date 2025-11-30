@@ -29,6 +29,11 @@ const envSchema = z.object({
         .string()
         .transform((value) => value.split(",").map(String))
         .pipe(z.string().array()),
+    GOOGLE_APPLICATION_CREDENTIALS: z
+        .string()
+        .regex(/^(\/([a-zA-Z0-9_-]+))+\/?$/)
+        .refine((path) => !path.includes(".."))
+        .refine((path) => !path.includes("//")),
 });
 
 const env = envSchema.parse({
@@ -43,6 +48,7 @@ const env = envSchema.parse({
     WB_API_KEY: process.env.WB_API_KEY,
     WB_QUERY_INTERVAL: process.env.WB_QUERY_INTERVAL,
     GOOGLE_APPLICATION_SHEET_IDS: process.env.GOOGLE_APPLICATION_SHEET_IDS,
+    GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
 
 export default env;
