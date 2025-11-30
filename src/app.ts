@@ -20,7 +20,7 @@ async function runApplication(): Promise<void> {
     const tariffsRepository = new TariffsRepository();
 
     const auth = new GoogleAuth({
-        keyFile: "google_key.json",
+        keyFile: env.GOOGLE_APPLICATION_CREDENTIALS,
         scopes: "https://www.googleapis.com/auth/spreadsheets",
     });
     const spreadsheetService = new GoogleSpreadsheetsService(new sheets_v4.Sheets({ auth }));
