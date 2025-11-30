@@ -1,0 +1,32 @@
+name: CI tests workflow
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    container: node:20-alpine
+    env:
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      GOOGLE_APPLICATION_CREDENTIALS: /dev/null
+      WB_API_KEY: none
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: npm ci
+      - name: Run lint
+        run: npm run eslint
+      - name: Run tests
+        run: |
+          npm run build
+          npm run test
